@@ -1,0 +1,17 @@
+# Fichiers locaux de Vagrant
+.vagrant/
+
+# Secrets et variables privées
+.env
+.env.*
+!.env.exemple
+
+# Fichiers temporaires Python
+__pycache__/
+*.pyc
+.venv/
+
+# Fichiers temporaires
+*.log
+*.swp
+*~
