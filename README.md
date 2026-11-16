@@ -2,7 +2,7 @@
 cat > README.md <<'EOF'
 # RÉSULTATS-BF
 
-**Projet de groupe — Master Informatique**  
+**Projet de groupe — Master Informatique**
 **Module : DevOps et infrastructures reproductibles**
 
 Infrastructure virtualisée, résiliente et scalable pour la consultation de résultats fictifs au Burkina Faso.
