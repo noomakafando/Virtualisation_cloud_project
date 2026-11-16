@@ -1,0 +1,74 @@
+# RESULTATS-BF — Supervision légère
+# Groupe 9
+
+global:
+  scrape_interval: 15s
+  scrape_timeout: 5s
+  evaluation_interval: 15s
+
+scrape_configs:
+
+  # État de Prometheus lui-même.
+  - job_name: prometheus
+    static_configs:
+      - targets:
+          - "127.0.0.1:9090"
+
+  # Sondes HTTP des applications et de HAProxy.
+  - job_name: resultats_http
+    metrics_path: /probe
+    params:
+      module: [http_2xx]
+
+    static_configs:
+      - targets:
+          - "http://127.0.0.1/sante"
+        labels:
+          service: lb1
+
+      - targets:
+          - "http://192.168.56.21:8000/sante"
+        labels:
+          service: app1
+
+      - targets:
+          - "http://192.168.56.22:8000/sante"
+        labels:
+          service: app2
+
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
+
+      - source_labels: [__param_target]
+        target_label: instance
+
+      - target_label: __address__
+        replacement: "127.0.0.1:9115"
+
+  # Sondes TCP des deux bases PostgreSQL.
+  - job_name: resultats_postgresql_tcp
+    metrics_path: /probe
+    params:
+      module: [tcp_connect]
+
+    static_configs:
+      - targets:
+          - "192.168.56.31:5432"
+        labels:
+          service: bdd1
+
+      - targets:
+          - "192.168.56.32:5432"
+        labels:
+          service: bdd2
+
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
+
+      - source_labels: [__param_target]
+        target_label: instance
+
+      - target_label: __address__
+        replacement: "127.0.0.1:9115"
