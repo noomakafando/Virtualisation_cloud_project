@@ -284,18 +284,17 @@ else
     echo "Copie depuis ${PRIMARY_IP}..."
 
     # pg_basebackup :
-    #   -C crée le slot sur le primaire.
+    #   Le slot est préalablement créé par scripts/bdd.sh.
     #   -S utilise ce slot.
     #   -R configure automatiquement standby.signal
     #      et les paramètres de connexion.
     #
-    # La commande échoue si le slot existe déjà.
+    # pg_basebackup utilise le slot existant sans le recréer.
 
     runuser -u postgres -- pg_basebackup \
         --dbname="host=${PRIMARY_IP} port=5432 user=${REPLICA_USER} passfile=${PASSFILE} application_name=${REPLICA_NAME}" \
         --pgdata="$STAGING" \
         --wal-method=stream \
-        --create-slot \
         --slot="$SLOT_NAME" \
         --write-recovery-conf \
         --no-password \

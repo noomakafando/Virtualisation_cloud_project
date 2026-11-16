@@ -154,6 +154,18 @@ NOEUDS << {
 }
 
 # ============================================================
+# Priorité de démarrage : primaire, réplique, applications, HAProxy.
+# Le primaire doit être prêt avant le pg_basebackup de la réplique.
+
+PRIORITE_ROLES = {
+  "bdd" => 0,
+  "replique" => 1,
+  "app" => 2,
+  "lb" => 3
+}
+
+NOEUDS.sort_by! { |n| PRIORITE_ROLES.fetch(n[:role]) }
+
 # 6. GENERATION DE L'INVENTAIRE DES MACHINES
 # ============================================================
 
